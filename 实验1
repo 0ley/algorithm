@@ -1,1 +1,69 @@
-#include<stdio.h>
+#include<iostream>
+#include<cstdio>
+using namespace std;
+
+struct Edge {
+	int x, y, Weight;
+}E[10000];
+int Emax,num;
+long long ans;
+//构造边
+void build(int i,int j,int  temp)
+{
+	Emax++;
+	E[Emax].x = i;
+	E[Emax].y = j;
+	E[Emax].Weight = temp;
+}
+//排序
+void qsort(int l, int r)
+{
+	int i = l, j = r, mid = E[(l + r) >> 1].Weight;
+	while (i <= j) {
+		while (E[i].Weight < mid)i++;
+		while (E[j].Weight > mid)j--;
+		if (i <= j) {
+			Edge temp = E[i];
+			E[i] = E[j];
+			E[j] = temp;
+			i++,j--;
+		}
+	}
+	if (i < r)qsort(i, r);
+	if (l < j)qsort(1, j);
+}
+
+int father[55];
+//并查集
+int getfather(int x) {
+	if (father[x] == x)return x;
+	father[x] = getfather(father[x]);
+	return father[x];
+}
+///合边
+void funion(int x, int y) {
+	father[x] = father[y];
+}
+
+int main() {
+	int i, j, k, n, temp;
+	scanf("%d", &n);//顶点
+	for (i = 1;i <= n;i++)
+		father[i] = i;
+	for(i=1;i<=n;i++)
+		for (j = 1;j <= n;j++) {
+			scanf("%d",&temp);
+			if (temp != 0)build(i, j, temp);//构建边
+		}
+	qsort(1, Emax);//快排，按权值从小到大排
+	i = 1;//初始化
+	while (num < n - 1) {
+		while (i < Emax&&getfather(E[i].x) == getfather(E[i].y))//判断是否独立
+			i++;
+		if (i > Emax)break;
+		ans += E[i].Weight;
+		funion(E[i].x, E[i].y);//合边
+		num++;
+	}
+	cout << ans << endl;
+}
