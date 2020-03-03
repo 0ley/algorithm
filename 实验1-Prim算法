@@ -1,0 +1,37 @@
+#include<iostream>
+#include<cstdio>
+using namespace std;
+int a[100][100];
+int dist[100]; //记录最小边
+int b[100]; //判断是否重复
+long long ans;//结果
+int main()
+{
+	int i, j, k, n,sign;
+	scanf("%d", &n);//顶点
+	for (i=1;i<=n;i++)
+		for (j = 1;j <= n;j++){
+			scanf("%d", &a[i][j]);
+			if (a[i][j] == 0)a[i][j] = 100000;
+		}
+	//得到图
+	dist[1] = 0;
+	b[1] = true;
+	for (i = 2;i <= n;i++)
+		dist[i] = a[1][i];
+	dist[0] = 100000;
+	//初始化
+	for (i = 1;i <= n;i++) {
+		sign = 0;
+		for (j = 1;j <= n;j++)
+			if (b[j] == false && dist[sign] > dist[j])sign = j;//寻找最小边
+		if (sign == 0)break;
+		ans += dist[sign];//连接
+		b[sign] = true;
+		for (j = 1;j <= n;j++)
+			if (a[sign][j] < dist[j])dist[j] = a[sign][j];
+		//更新
+	}
+	cout << ans << endl;
+	system("pause");
+}
