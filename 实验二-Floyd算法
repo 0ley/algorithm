@@ -1,0 +1,46 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<Windows.h>
+#define max 1000000000
+//两个数组存储图基本信息
+int A[1000][1000], path[1000][1000];
+int main()
+{
+	int i, j, k, m, n;
+	int u,v,w;
+  //输入顶点与边
+	scanf("%d%d", &n, &m);
+ //初始化
+	for (i = 1;i <= n;i++)
+		for (j = 1;j <= n;j++) {
+			A[i][j] = max;
+			path[i][j] = j;
+		}
+//边信息录入
+	for (i = 1;i <= m;i++) {
+		scanf("%d%d%d", &u, &v, &w);
+		A[u][v] = w;
+	}
+//更新最短路
+	for (k = 1;k <= n;k++)
+		for (i = 1;i <= n;i++)
+			for (j = 1;j <= n;j++) {
+				if (A[i][k] + A[k][j] < A[i][j]) {
+					A[i][j] = A[i][k] + A[k][j];
+					path[i][j] = path[i][k];
+				}
+			}
+
+//得到两顶点最短路径
+	int start, end;
+	scanf("%d%d", &start, &end);
+	while (start != end) {
+		printf("%d->", start);
+		start = path[start][end];
+	}
+	printf("%d\n", end);
+
+
+	system("pause");
+	return 0;
+}
