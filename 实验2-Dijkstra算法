@@ -1,0 +1,47 @@
+#include<iostream>
+#include<algorithm>
+#include<cstring>
+using namespace std;
+const int N = 510;
+const int MAX = 0x3f3f3f3f;
+int g[N][N] ;// 存储每条边
+int dist[N]; // 存储1号点到每个点的最短距离
+int n, m;
+bool st[N];// 存储每个点的最短路是否已经确定
+
+// 求1号点到n号点的最短路，如果不存在则返回-1
+int dijkstra()
+{
+	memset(dist, 0x3f, sizeof dist);
+	dist[1] = 0;
+
+	for (int i = 1;i <= n;i++) {
+		int t = -1;// 在还未确定最短路的点中，寻找距离最小的点
+		for (int j = 1;j <= n;j++)
+			if (!st[j] && (t == -1 || dist[t] > dist[j]))
+				t = j;
+		// 用t更新其他点的距离
+
+		st[t] = true;
+		
+		for (int j = 1;j <= n;j++)
+			dist[j] = min(dist[j], dist[t] + g[t][j]);
+	}
+	if (dist[n] == MAX)return -1;
+	else
+		return dist[n];
+}
+
+int main()
+{
+	cin >> n >> m;
+	memset(g, 0x3f, sizeof g);
+	for (int i = 0;i < m;i++) {
+		int u, v, w;
+		cin >> u >> v >> w;
+		g[u][v] = min(g[u][v], w);
+	}
+	int ans = dijkstra();
+	cout << ans;
+	return 0;
+}
