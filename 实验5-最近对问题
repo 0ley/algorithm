@@ -1,0 +1,81 @@
+#include <iostream>
+#include <cstdio>
+#include <cmath>
+#include <algorithm>
+#include<Windows.h>
+#include<math.h>
+#include<stdlib.h>
+#include<iomanip>
+#include<string.h>
+#include<stdio.h>
+using namespace std;
+const int maxx = 999999;
+
+//点
+struct Point {  
+	double x;
+	double y;
+};
+//排序
+bool sortX(Point a, Point b) { 
+	return a.x < b.x;
+}
+bool sortY(Point a, Point b) { 
+	return a.y < b.y;
+}
+
+//距离
+double dist(Point a, Point b) { 
+	return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2));
+}
+
+Point arr[maxx];
+
+double dirctSearch(int n, Point a[]) {
+	if (n == 1) return 0;
+	else return dist(a[1], arr[2]);
+}
+double EfficientClosestPair(int l, int r) {
+	int mid = (l + r) / 2;
+	int count = 1;
+	double d = 0;
+
+	if (l == r) return maxx;
+
+	d = (min(EfficientClosestPair(l, mid), EfficientClosestPair(mid + 1, r)));
+	Point tmp[maxx];
+	//左
+	for (int i = mid;i >= l && (arr[mid].x - arr[i].x < d);i--) {  
+		tmp[count++] = arr[i];
+	}
+	//右
+	for (int i = mid + 1;i <= r && (arr[i].x - arr[mid].x < d);i++) { 
+		tmp[count++] = arr[i];
+	}
+	//按y轴排序
+	sort(tmp + 1, tmp + count, sortY); 
+
+	for (int i = 1;i < count;i++) 
+		for (int j = i + 1;j < count && (arr[j].y - arr[i].y < d);j++) 
+			d = min(d, dist(arr[i], arr[j]));
+
+	return d;
+}
+int main(int argc, const char * argv[]) {
+	int n;
+	double Dmin;
+	scanf("%d", &n);
+
+	for (int i = 1;i <= n;i++)
+		cin >> arr[i].x >> arr[i].y;
+
+	if (n <= 2) {
+		Dmin = dirctSearch(n, arr); //点少，蛮力算法求解
+	}
+	else {   
+		sort(arr + 1, arr + 1 + n, sortX); //按照X轴排序
+		Dmin = EfficientClosestPair(1, n);//分治找最小点对距离
+	}
+	printf("%.2f\n", Dmin);
+	return 0;
+}
