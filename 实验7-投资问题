@@ -1,0 +1,25 @@
+#include <iostream>
+using namespace std;
+int main() {
+	int m = 5, n = 4;
+	//m万元钱，n项投资
+	int f[5][6] = { {0,0,0,0,0,0},{0,11,12,13,14,15},{0,0,5,10,15,20},{0,2,10,30,32,40},{0,20,21,22,23,24} };
+	int F[5][6];
+	//F[i][x]，将x元钱投入到前i个项目上最大的收益
+	int t1, t2 = 0;
+	
+	for (int j = 0; j <= m; ++j) {
+		F[0][j] = f[0][j];
+	}
+	for (int i = 1; i <= n; ++i) {
+		for (int j = 1; j <= m; ++j) {
+			for (t1 = 0; t1 <= j; ++t1) {
+				t2 = F[i - 1][j - t1] + f[i][t1];
+				if (t2 > F[i][j]) {
+					F[i][j] = t2;
+				}
+			}
+		}
+	}
+	cout << F[n][m] << endl;
+}
